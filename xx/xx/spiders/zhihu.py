@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import json
+from datetime import datetime
 
 from xx.zhihu_people import ZhihuPeople
 
@@ -8,6 +9,9 @@ class ZhihuSpider(scrapy.Spider):
     name = "zhihu"
     allowed_domains = ["zhihu.com"]
     custom_settings = {
+        'CONCURRENT_REQUESTS': 16,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 16,
+        'CONCURRENT_REQUESTS_PER_IP': 16,
         'DOWNLOAD_DELAY': 2,
         'COOKIES_DEBUG': True,
         'FEED_FORMAT': 'json',
@@ -20,7 +24,7 @@ class ZhihuSpider(scrapy.Spider):
             'xx.mongodb.MongoPipeline': 300,
         },
         'DOWNLOADER_MIDDLEWARES': {
-            'xx.randomproxy.RandomProxy': 300,
+        #   'xx.randomproxy.RandomProxy': 300,
             'scrapy.downloadermiddlewares.retry.RetryMiddleware': 333,
         }
     }
@@ -108,6 +112,7 @@ class ZhihuSpider(scrapy.Spider):
         people['topics'] = topics
 
         people['browsers'] = self.parse_xpath('/html/body/div[3]/div[2]/div[5]/div/span/strong/text()', response)
+        people['datetime'] = datetime.now()
         yield people
 
         people_url = response.url + '/followees'

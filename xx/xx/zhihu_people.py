@@ -32,4 +32,5 @@ class ZhihuPeople(scrapy.Item):
     columnsfollowed = scrapy.Field()
     topics = scrapy.Field()
     browsers = scrapy.Field()
+    datetime = scrapy.Field()
 
